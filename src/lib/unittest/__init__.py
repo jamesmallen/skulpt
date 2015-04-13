@@ -31,9 +31,8 @@ class TestCase:
                 self.setup()
                 func()
                 self.tearDown()
-            except:
-                self.appendResult('Error',None,None,None)
-                self.numFailed += 1
+            except Exception as e:
+                self.appendResult('Exception',None,None,{'e': e, 'func': func})
         self.showSummary()
 
     def assertEqual(self, actual, expected, feedback=""):
@@ -109,8 +108,10 @@ class TestCase:
         self.appendResult(res,str(a)+' to be less than or equal to ',b,feedback)
 
     def appendResult(self,res,actual,expected,feedback):
-        if res == 'Error':
-            msg = 'Error'
+        if res == 'Exception':
+            msg = 'Excception in %s: %s' % (str(feedback['func']), str(feedback['e']))
+            print msg
+            self.numFailed += 1
         elif res:
             msg = 'Pass'
             self.numPassed += 1
